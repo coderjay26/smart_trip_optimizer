@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "735912552800",
+    "project_id": "smart-trip-optimizer",
+    "storage_bucket": "smart-trip-optimizer.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735912552800:android:d923a171138b0579261605",
+        "android_client_info": {
+          "package_name": "com.jf.smart_trip_optimizer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3StFtqr9bmgQ2dJDYpqrQOz3OEm5spZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
