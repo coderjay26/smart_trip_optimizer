@@ -5,16 +5,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class UserModel {
-  String firstName;
-  String middleName;
-  String lastName;
+  // String firstName;
+  // String middleName;
+  // String lastName;
+  String fullName;
   String age;
   String address;
   String email;
   UserModel({
-    required this.firstName,
-    required this.middleName,
-    required this.lastName,
+    required this.fullName,
     required this.age,
     required this.address,
     required this.email,
@@ -22,19 +21,16 @@ class UserModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'firstName': firstName,
-      'middleName': middleName,
-      'lastName': lastName,
+      'fullName': fullName,
       'age': age,
       'address': address,
+      'email': email,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      firstName: map['firstName'] as String,
-      middleName: map['middleName'] as String,
-      lastName: map['lastName'] as String,
+      fullName: map['fullName'] as String,
       age: map['age'] as String,
       address: map['address'] as String,
       email: map['email'] as String,
@@ -49,9 +45,10 @@ class UserModel {
   Future<void> saveInfo(userId) async {
     try {
       await FirebaseFirestore.instance.collection('User').doc(userId).set({
-        'firstName': firstName,
-        'middleName': middleName,
-        'lastName': lastName,
+        // 'firstName': firstName,
+        // 'middleName': middleName,
+        // 'lastName': lastName,
+        'fullName': fullName,
         'address': address,
         'age': age,
         'email': email,

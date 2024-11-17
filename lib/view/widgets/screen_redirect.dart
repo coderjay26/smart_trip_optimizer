@@ -13,14 +13,14 @@ class ScreenRedirect extends StatelessWidget {
     // Initialize AuthController
     final authController = Get.put(AuthController());
 
-    // Check if the user is logged in
+    /// Check if the user is logged in
+    /// If user is logged in, navigate to the home screen
+    /// If user is not logged in, navigate to the login screen
     return Obx(() {
       if (authController.user.value != null) {
-        // If user is logged in, navigate to the home screen
         return HomeScreen();
       } else {
-        // If user is not logged in, navigate to the login screen
-        return LoginScreen();
+        return const LoginScreen();
       }
     });
   }

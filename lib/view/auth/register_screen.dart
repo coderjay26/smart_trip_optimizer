@@ -33,7 +33,8 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 32.0),
                     TextFormField(
-                      controller: _authController.lastNameController,
+                      controller: _authController.fullNameController,
+                      keyboardType: TextInputType.name,
                       decoration: InputDecoration(
                         labelText: 'Full Name',
                         fillColor: StyleConst.auth_text_field_color,
@@ -61,7 +62,7 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter an last name';
+                          return 'Please enter a name'; 
                         }
                         return null;
                       },
@@ -69,6 +70,7 @@ class RegisterScreen extends StatelessWidget {
                     const SizedBox(height: 16.0),
                     TextFormField(
                       controller: _authController.emailController,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Email',
                         fillColor: StyleConst.auth_text_field_color,
@@ -283,61 +285,78 @@ class RegisterScreen extends StatelessWidget {
                     //   },
                     // ),
                     // const SizedBox(height: 16.0),
-                    TextFormField(
-                      controller: _authController.passwordController,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        fillColor: StyleConst.auth_text_field_color,
-                        filled: true,
-                        labelStyle: const TextStyle(
-                          color: Colors.grey,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: const BorderSide(
-                            color: StyleConst.auth_text_field_color,
-                            width: 1.0,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: const BorderSide(
+                    Obx(
+                      () => TextFormField(
+                        controller: _authController.passwordController,
+                        keyboardType: TextInputType.visiblePassword,
+                        obscureText: !_authController.isPasswordVisible.value,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          fillColor: StyleConst.auth_text_field_color,
+                          filled: true,
+                          labelStyle: const TextStyle(
                             color: Colors.grey,
-                            width: 2.0,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                              color: StyleConst.auth_text_field_color,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                              color: Colors.grey,
+                              width: 2.0,
+                            ),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _authController.isPasswordVisible.value
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () {
+                              // Toggle password visibility
+                              _authController.isPasswordVisible.value =
+                                  !_authController.isPasswordVisible.value;
+                            },
                           ),
                         ),
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a password';
+                          }
+                          if (value.length < 8) {
+                            return 'Password must be at least 8 characters';
+                          }
+                          return null;
+                        },
                       ),
-                      style: const TextStyle(
-                        color: Colors.black,
-                      ),
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a password';
-                        }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
-                        }
-                        return null;
-                      },
                     ),
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Password must be 8 character ',
                           style: StyleConst.auth_text_style,
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Row(
                       children: [
                         Expanded(
                           child: Obx(() {
                             // Show a loading indicator while the account is being created
                             if (_authController.isLoading.value) {
-                              return CircularProgressIndicator();
+                              return const Center(
+                                  child: CircularProgressIndicator());
                             } else {
                               return ElevatedButton(
                                 style: StyleConst.auth_button_style,
@@ -352,7 +371,7 @@ class RegisterScreen extends StatelessWidget {
                                         email, password);
                                   }
                                 },
-                                child: Text('Create Account'),
+                                child: const Text('Create Account'),
                               );
                             }
                           }),
@@ -364,7 +383,7 @@ class RegisterScreen extends StatelessWidget {
                       if (_authController.errorMessage.value.isNotEmpty) {
                         return Text(
                           _authController.errorMessage.value,
-                          style: TextStyle(color: Colors.red),
+                          style: const TextStyle(color: Colors.red),
                         );
                       }
                       return Container();

@@ -71,43 +71,57 @@ class LoginScreen extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 16.0),
-                    TextFormField(
-                      onChanged: (value) => controller.password.value = value,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        border: const OutlineInputBorder(),
-                        fillColor: StyleConst.auth_text_field_color,
-                        filled: true,
-                        labelStyle: const TextStyle(
-                          color: Colors.grey,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: const BorderSide(
-                            color: StyleConst.auth_text_field_color,
-                            width: 1.0,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: const BorderSide(
+                    Obx(
+                      () => TextFormField(
+                        onChanged: (value) => controller.password.value = value,
+                        obscureText: !controller.isPasswordVisibleInLogin.value,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          border: const OutlineInputBorder(),
+                          fillColor: StyleConst.auth_text_field_color,
+                          filled: true,
+                          labelStyle: const TextStyle(
                             color: Colors.grey,
-                            width: 2.0,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                              color: StyleConst.auth_text_field_color,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                              color: Colors.grey,
+                              width: 2.0,
+                            ),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              controller.isPasswordVisibleInLogin.value
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () {
+                              controller.isPasswordVisibleInLogin.value =
+                                  !controller.isPasswordVisibleInLogin.value;
+                            },
                           ),
                         ),
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          } else if (value.length < 8) {
+                            return 'Password must be at least 8 characters long';
+                          }
+                          return null;
+                        },
                       ),
-                      style: const TextStyle(
-                        color: Colors.black,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        } else if (value.length < 6) {
-                          return 'Password must be at least 6 characters long';
-                        }
-                        return null;
-                      },
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,

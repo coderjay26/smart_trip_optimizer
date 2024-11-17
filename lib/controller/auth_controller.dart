@@ -9,10 +9,13 @@ class AuthController extends GetxController {
   var password = ''.obs;
   var isLoading = false.obs;
   var errorMessage = ''.obs;
+  var isPasswordVisible = false.obs;
+  var isPasswordVisibleInLogin = false.obs;
   final formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController fullNameController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController middleNameController = TextEditingController();
@@ -27,11 +30,21 @@ class AuthController extends GetxController {
   Future<void> login() async {
     if (formKey.currentState!.validate()) {
       try {
-        await _auth.signInWithEmailAndPassword(
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: email.value,
           password: password.value,
         );
-        Get.offAndToNamed('/home');
+
+        User? user = userCredential.user;
+        if (user != null && user.emailVerified) {
+          Get.offAndToNamed('/home');
+        } else {
+          Get.snackbar(
+            "Email Not Verified",
+            "Please verify your email before logging in.",
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
       } catch (e) {
         Get.snackbar(
           "Login Error",
@@ -54,20 +67,24 @@ class AuthController extends GetxController {
       );
       User? user = userCredential.user;
       if (user != null) {
+        await user.updateDisplayName(fullNameController.text);
+
         UserModel userModel = UserModel(
-            firstName: firstNameController.text,
-            middleName: middleNameController.text,
-            lastName: lastNameController.text,
+            // firstName: firstNameController.text,
+            // middleName: middleNameController.text,
+            // lastName: lastNameController.text,
+            fullName: fullNameController.text,
             age: ageController.text,
             address: addressController.text,
             email: emailController.text);
+
         await userModel.saveInfo(user.uid);
+        await user.sendEmailVerification();
+        Get.snackbar('Success', 'Account Created! Please verify your email.',
+            snackPosition: SnackPosition.BOTTOM);
       }
 
-      Get.snackbar('Success', 'Account Created!',
-          snackPosition: SnackPosition.BOTTOM);
-
-      Get.offAllNamed('/home');
+      Get.offAllNamed('/loginScreen');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         errorMessage.value = 'Email already in use';
