@@ -159,6 +159,8 @@ class HomeScreen extends StatelessWidget {
                                         : 'https://via.placeholder.com/300';
 
                                     return Container(
+                                      width: 300,
+                                      height: 400,
                                       padding: const EdgeInsets.all(8.0),
                                       child: Column(
                                         crossAxisAlignment:
@@ -173,14 +175,14 @@ class HomeScreen extends StatelessWidget {
                                                 child: Image.network(
                                                   imageUrl,
                                                   width: 300,
-                                                  height: 400,
+                                                  height: 388,
                                                   fit: BoxFit.cover,
                                                   errorBuilder: (context, error,
                                                       stackTrace) {
                                                     return Container(
                                                       color: Colors.grey[300],
                                                       width: 300,
-                                                      height: 400,
+                                                      height: 388,
                                                       child: Center(
                                                         child: Icon(Icons.error,
                                                             color: Colors.red),
@@ -210,8 +212,14 @@ class HomeScreen extends StatelessWidget {
                                               ),
                                             ],
                                           ),
-                                          Text(name),
-                                          Text(address)
+                                          Text(
+                                            name,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Text(
+                                            address,
+                                            overflow: TextOverflow.ellipsis,
+                                          )
                                         ],
                                       ),
                                     );

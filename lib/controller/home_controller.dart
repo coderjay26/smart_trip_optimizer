@@ -50,30 +50,69 @@ class HomeController extends GetxController {
     const String apiKey = 'AIzaSyCQPvqdI0kif1hbKFz4MpDUh-RxwtP8Bu8';
     const String location = '10.3371483,123.9327035';
     const String radius = '1500';
-    const String type = 'tourist_attraction';
+    const String type = 'point_of_interest';
 
-    const url =
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$location&radius=$radius&type=$type&key=$apiKey';
+    // const url =
+    //     'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$location&radius=$radius&keyword=landmark|restaurant|park&key=$apiKey';
 
-    try {
-      final response = await http.get(Uri.parse(url));
+    // try {
+    //   final response = await http.get(Uri.parse(url));
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+    //   if (response.statusCode == 200) {
+    //     final data = json.decode(response.body);
 
-        if (data['results'] != null) {
-          places.value = data['results']; // Update places
-        } else {
-          debugPrint('No results found');
+    //     if (data['results'] != null) {
+    //       places.value = data['results'];
+    //     } else {
+    //       debugPrint('No results found');
+    //     }
+    //   } else {
+    //     throw Exception(
+    //         'Failed to load places. Status code: ${response.statusCode}');
+    //   }
+    // } catch (e) {
+    //   debugPrint('Error fetching places: $e');
+    // }
+
+    // update();
+    // final types = [
+    //   'beach',
+    //   'hotel',
+    //   'lodging',
+    //   'resort',
+    //   'restaurant',
+    //   'park',
+    //   'museum',
+    //   'cafe',
+    //   'tourist_attraction',
+    //   'natural_feature'
+    // ];
+    const List<String> types = [
+      'restaurant',
+      'park',
+      'museum',
+      'cafe',
+    ];
+
+    for (final type in types) {
+      final url =
+          'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$location&radius=$radius&type=$type&key=$apiKey';
+
+      try {
+        final response = await http.get(Uri.parse(url));
+
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+
+          if (data['results'] != null) {
+            places.addAll(data['results']);
+          }
         }
-      } else {
-        throw Exception(
-            'Failed to load places. Status code: ${response.statusCode}');
+      } catch (e) {
+        debugPrint('Error fetching places for type $type: $e');
       }
-    } catch (e) {
-      debugPrint('Error fetching places: $e');
     }
 
-    update(); // Notify GetX to rebuild UI
+    update();
   }
 }
