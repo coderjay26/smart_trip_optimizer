@@ -113,10 +113,10 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(
                         height: 24,
                       ),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Best Destination',
                             style: TextStyle(
                               fontSize: 20,
@@ -124,12 +124,17 @@ class HomeScreen extends StatelessWidget {
                               color: Colors.black,
                             ),
                           ),
-                          Text(
-                            'View All',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: StyleConst.auth_second_color,
+                          TextButton(
+                            onPressed: () {
+                              Get.toNamed('/seeAll');
+                            },
+                            child: const Text(
+                              'View All',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: StyleConst.auth_second_color,
+                              ),
                             ),
                           ),
                         ],
@@ -137,7 +142,7 @@ class HomeScreen extends StatelessWidget {
                       Expanded(
                         child: Obx(
                           () => _homeController.places.isEmpty
-                              ? Center(child: CircularProgressIndicator())
+                              ? const Center(child: CircularProgressIndicator())
                               : ListView.builder(
                                   scrollDirection: Axis.horizontal,
                                   itemCount: _homeController.places.length,
@@ -155,7 +160,7 @@ class HomeScreen extends StatelessWidget {
                                         : null;
 
                                     final imageUrl = photoReference != null
-                                        ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=300&photoreference=$photoReference&key=AIzaSyCQPvqdI0kif1hbKFz4MpDUh-RxwtP8Bu8'
+                                        ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=$photoReference&key=AIzaSyCQPvqdI0kif1hbKFz4MpDUh-RxwtP8Bu8'
                                         : 'https://via.placeholder.com/300';
 
                                     return Container(
@@ -183,7 +188,7 @@ class HomeScreen extends StatelessWidget {
                                                       color: Colors.grey[300],
                                                       width: 300,
                                                       height: 388,
-                                                      child: Center(
+                                                      child: const Center(
                                                         child: Icon(Icons.error,
                                                             color: Colors.red),
                                                       ),
