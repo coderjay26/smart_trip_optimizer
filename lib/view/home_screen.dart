@@ -160,7 +160,7 @@ class HomeScreen extends StatelessWidget {
                                         : null;
 
                                     final imageUrl = photoReference != null
-                                        ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=$photoReference&key=AIzaSyCQPvqdI0kif1hbKFz4MpDUh-RxwtP8Bu8'
+                                        ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=$photoReference&key=AIzaSyBtgjzhgUsHs_2DRX0a4Q4eQqrzoE1wb40'
                                         : 'https://via.placeholder.com/300';
 
                                     return Container(
@@ -180,14 +180,14 @@ class HomeScreen extends StatelessWidget {
                                                 child: Image.network(
                                                   imageUrl,
                                                   width: 300,
-                                                  height: 388,
+                                                  height: 369,
                                                   fit: BoxFit.cover,
                                                   errorBuilder: (context, error,
                                                       stackTrace) {
                                                     return Container(
                                                       color: Colors.grey[300],
                                                       width: 300,
-                                                      height: 388,
+                                                      height: 369,
                                                       child: const Center(
                                                         child: Icon(Icons.error,
                                                             color: Colors.red),

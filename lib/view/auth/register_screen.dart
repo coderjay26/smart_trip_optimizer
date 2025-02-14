@@ -62,7 +62,7 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter a name'; 
+                          return 'Please enter a name';
                         }
                         return null;
                       },
@@ -398,7 +398,7 @@ class RegisterScreen extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () async {
-                            Get.offAndToNamed('/registerScreen');
+                            Get.offAndToNamed('/loginScreen');
                           },
                           child: const Text(
                             'Sign in',

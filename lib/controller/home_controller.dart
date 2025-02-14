@@ -47,7 +47,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> fetchPlaces() async {
-    const String apiKey = 'AIzaSyCQPvqdI0kif1hbKFz4MpDUh-RxwtP8Bu8';
+    const String apiKey = 'AIzaSyBtgjzhgUsHs_2DRX0a4Q4eQqrzoE1wb40';
     const String location = '10.3371483,123.9327035';
     const String radius = '1500';
     const String type = 'point_of_interest';
