@@ -6,6 +6,7 @@ class TextCons {
   static const sign_in_sub_header = 'Please sign in to continue using our app';
   static const sign_up_sub_header =
       'Please fill the details and create account';
+  static const api_key = 'fsq32AqdsdWvoD9dpLj6Dd9LkRptvg6Y1Vzk+3x5AueWiIY=';
 }
 
 class StyleConst {

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/home_controller.dart';
@@ -25,23 +26,16 @@ class SeeAllScreen extends StatelessWidget {
                     crossAxisCount: crossAxisCount,
                     mainAxisSpacing: 8,
                     crossAxisSpacing: 8,
-                    childAspectRatio: 0.8, // Adjust for better fit
+                    childAspectRatio: 0.8,
                   ),
                   itemCount: _homeController.places.length,
                   itemBuilder: (context, index) {
                     final place = _homeController.places[index];
                     final name = place['name'] ?? 'Unknown Place';
                     final address =
-                        place['vicinity'] ?? 'Address not available';
-                    final photoReference =
-                        (place['photos'] != null && place['photos'].isNotEmpty)
-                            ? place['photos'][0]['photo_reference']
-                            : null;
-
-                    final imageUrl = photoReference != null
-                        ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=300&photoreference=$photoReference&key=AIzaSyCQPvqdI0kif1hbKFz4MpDUh-RxwtP8Bu8'
-                        : 'https://static.vecteezy.com/system/resources/thumbnails/008/695/917/small/no-image-available-icon-simple-two-colors-template-for-no-image-or-picture-coming-soon-and-placeholder-illustration-isolated-on-white-background-vector.jpg';
-
+                        place['address'] ?? 'No description available';
+                    final imageUrl =
+                        place['image'] ?? 'https://via.placeholder.com/300';
                     return Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
@@ -55,22 +49,31 @@ class SeeAllScreen extends StatelessWidget {
                               ClipRRect(
                                 borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(15)),
-                                child: Image.network(
-                                  imageUrl,
-                                  height: 140,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      height: 140,
-                                      color: Colors.grey[300],
-                                      child: const Center(
-                                        child: Icon(Icons.error,
-                                            color: Colors.red),
+                                child: AspectRatio(
+                                    aspectRatio: 16 / 14,
+                                    child: CachedNetworkImage(
+                                      imageUrl: imageUrl,
+                                      width: 300,
+                                      height: 369,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Container(
+                                        width: 300,
+                                        height: 369,
+                                        color: Colors.grey[300],
+                                        child: const Center(
+                                            child: CircularProgressIndicator()),
                                       ),
-                                    );
-                                  },
-                                ),
+                                      errorWidget: (context, url, error) =>
+                                          Container(
+                                        width: 300,
+                                        height: 369,
+                                        color: Colors.grey[300],
+                                        child: const Center(
+                                          child: Icon(Icons.error,
+                                              color: Colors.red),
+                                        ),
+                                      ),
+                                    )),
                               ),
                               Positioned(
                                 top: 8,
@@ -89,18 +92,14 @@ class SeeAllScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  name,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                                Text(name,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                    overflow: TextOverflow.ellipsis),
                                 const SizedBox(height: 4),
-                                Text(
-                                  address,
-                                  style: const TextStyle(color: Colors.grey),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                                Text(address,
+                                    style: const TextStyle(color: Colors.grey),
+                                    overflow: TextOverflow.ellipsis),
                               ],
                             ),
                           ),

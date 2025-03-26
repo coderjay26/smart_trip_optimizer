@@ -15,7 +15,12 @@ dependencies:
   cloud_firestore: ^5.4.5
   google_fonts: ^6.2.1
   http: ^1.2.2
-
+  cached_network_image: ^3.4.1
+  sqflite: ^2.3.3+1
+  geolocator: ^13.0.2
+  flutter_map: 
+  latlong2:
+  flexible_polyline_dart: 
 dev_dependencies:
   flutter_test:
     sdk: flutter

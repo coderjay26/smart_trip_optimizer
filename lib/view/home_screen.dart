@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_trip_optimizer/constant/text_cons.dart';
@@ -150,18 +151,10 @@ class HomeScreen extends StatelessWidget {
                                     final place = _homeController.places[index];
                                     final name =
                                         place['name'] ?? 'Unknown Place';
-                                    final address = place['vicinity'] ??
-                                        'Address not available';
-                                    // Check for photos
-                                    final photoReference = (place['photos'] !=
-                                                null &&
-                                            place['photos'].isNotEmpty)
-                                        ? place['photos'][0]['photo_reference']
-                                        : null;
-
-                                    final imageUrl = photoReference != null
-                                        ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=$photoReference&key=AIzaSyBtgjzhgUsHs_2DRX0a4Q4eQqrzoE1wb40'
-                                        : 'https://via.placeholder.com/300';
+                                    final address = place['description'] ??
+                                        'No description available';
+                                    final imageUrl = place['image'] ??
+                                        'https://via.placeholder.com/300';
 
                                     return Container(
                                       width: 300,
@@ -171,60 +164,39 @@ class HomeScreen extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Stack(
-                                            alignment: Alignment.topRight,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                child: Image.network(
-                                                  imageUrl,
+                                          ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              child: CachedNetworkImage(
+                                                imageUrl: imageUrl,
+                                                width: 300,
+                                                height: 369,
+                                                fit: BoxFit.cover,
+                                                placeholder: (context, url) =>
+                                                    Container(
                                                   width: 300,
                                                   height: 369,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    return Container(
-                                                      color: Colors.grey[300],
-                                                      width: 300,
-                                                      height: 369,
-                                                      child: const Center(
-                                                        child: Icon(Icons.error,
-                                                            color: Colors.red),
-                                                      ),
-                                                    );
-                                                  },
+                                                  color: Colors.grey[300],
+                                                  child: const Center(
+                                                      child:
+                                                          CircularProgressIndicator()),
                                                 ),
-                                              ),
-                                              Positioned(
-                                                top: 20,
-                                                right: 20,
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(8),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white
-                                                        .withOpacity(0.9),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: Icon(
-                                                    Icons
-                                                        .bookmark_border, // Bookmark icon
-                                                    color: Colors.grey[800],
-                                                    size: 24,
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Container(
+                                                  width: 300,
+                                                  height: 369,
+                                                  color: Colors.grey[300],
+                                                  child: const Center(
+                                                    child: Icon(Icons.error,
+                                                        color: Colors.red),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            name,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            address,
-                                            overflow: TextOverflow.ellipsis,
-                                          )
+                                              )),
+                                          Text(name,
+                                              overflow: TextOverflow.ellipsis),
+                                          Text(address,
+                                              overflow: TextOverflow.ellipsis),
                                         ],
                                       ),
                                     );
@@ -232,13 +204,14 @@ class HomeScreen extends StatelessWidget {
                                 ),
                         ),
                       ),
-                      // Text('Middle Name: ${userInfo.fullName}'),
-                      // Text('Address: ${userInfo.address}'),
-                      // Text('Age: ${userInfo.address}'),
-                      // Text('Email: ${userInfo.email}'),
-                      OutlinedButton(
-                          onPressed: () => _authController.logOut(),
-                          child: const Text('Logout'))
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: OutlinedButton(
+                            onPressed: () {
+                              Get.toNamed('/chooseTravel');
+                            },
+                            child: const Text('Plan My Trip')),
+                      )
                     ],
                   ),
                 );

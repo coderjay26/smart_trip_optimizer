@@ -5,9 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:smart_trip_optimizer/view/auth/login_screen.dart';
 import 'package:smart_trip_optimizer/view/auth/register_screen.dart';
+import 'package:smart_trip_optimizer/view/choose_travel_mode_screen.dart';
 import 'package:smart_trip_optimizer/view/home_screen.dart';
+import 'package:smart_trip_optimizer/view/map_screen.dart';
 import 'package:smart_trip_optimizer/view/widgets/screen_redirect.dart';
 import 'package:smart_trip_optimizer/view/widgets/see_all_screen.dart';
+import 'package:smart_trip_optimizer/view/widgets/select_available_time_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +34,12 @@ class MainApp extends StatelessWidget {
         GetPage(name: '/registerScreen', page: () => RegisterScreen()),
         GetPage(name: '/home', page: () => HomeScreen()),
         GetPage(name: '/seeAll', page: () => SeeAllScreen()),
+        GetPage(name: '/chooseTravel', page: () => ChooseTravelModeScreen()),
+        GetPage(name: '/selectTime', page: () => SelectAvailableTimeScreen()),
+        GetPage(
+            name: '/map',
+            page: () =>
+                MapScreen(places: Get.arguments as List<Map<String, String>>))
       ],
     );
   }
