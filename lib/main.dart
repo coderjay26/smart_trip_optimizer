@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,7 +16,26 @@ import 'package:smart_trip_optimizer/view/widgets/select_available_time_screen.d
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  requestPermissionAndTrack();
   runApp(const MainApp());
+}
+
+Future<void> requestPermissionAndTrack() async {
+  LocationPermission permission = await Geolocator.checkPermission();
+
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    Get.snackbar(
+      "Permission Denied",
+      "Location permission is permanently denied. Enable it in settings.",
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+    return;
+  }
 }
 
 class MainApp extends StatelessWidget {

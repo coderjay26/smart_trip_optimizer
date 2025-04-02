@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flexible_polyline_dart/flutter_flexible_polyline.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -11,9 +12,11 @@ class MapXController extends GetxController {
   Rx<LatLng> currentLocation = LatLng(8.6525, 123.4228).obs;
   RxList<LatLng> routePoints = <LatLng>[].obs;
   var isLoading = true.obs;
+  Rx<LatLng?> userLocation = Rx<LatLng?>(null);
   @override
   void onInit() {
     super.onInit();
+    requestPermissionAndTrack();
     // _startLocationListener();
   }
 
@@ -134,6 +137,40 @@ class MapXController extends GetxController {
   List<LatLng> decodeHerePolyline(String encoded) {
     final decodedList = FlexiblePolyline.decode(encoded);
     return decodedList.map((point) => LatLng(point.lat, point.lng)).toList();
+  }
+
+  Future<void> requestPermissionAndTrack() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      Get.snackbar(
+        "Permission Denied",
+        "Location permission is permanently denied. Enable it in settings.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
+      trackUserLocation();
+    }
+  }
+
+  void trackUserLocation() {
+    Geolocator.getPositionStream(
+      locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10, // Update when user moves 10 meters
+      ),
+    ).listen((Position position) {
+      userLocation.value = LatLng(position.latitude, position.longitude);
+    });
   }
 }
 //rRKUcmqXtJ03mkvsrzYS
