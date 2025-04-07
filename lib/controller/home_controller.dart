@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart';
 import '../model/user_model.dart';
 
 class HomeController extends GetxController {
@@ -16,6 +17,8 @@ class HomeController extends GetxController {
   var places = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> filteredPlaces = <Map<String, dynamic>>[].obs;
   var travelMode = 'walking'.obs;
+  final Rx<LatLng?> userLocation = Rx<LatLng?>(null);
+
   @override
   void onInit() {
     super.onInit();

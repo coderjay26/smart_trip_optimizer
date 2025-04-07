@@ -21,6 +21,7 @@ dependencies:
   flutter_map: 
   latlong2:
   flexible_polyline_dart: 
+  flutter_tts: ^4.2.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
