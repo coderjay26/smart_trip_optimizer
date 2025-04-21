@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
@@ -17,12 +18,15 @@ class HomeController extends GetxController {
   var places = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> filteredPlaces = <Map<String, dynamic>>[].obs;
   var travelMode = 'walking'.obs;
+  var lat = ''.obs;
+  var lng = ''.obs;
   final Rx<LatLng?> userLocation = Rx<LatLng?>(null);
 
   @override
   void onInit() {
     super.onInit();
     firebaseUser.bindStream(_auth.authStateChanges());
+    _startLocationListener();
     fetchPlaces();
   }
 
@@ -66,6 +70,46 @@ class HomeController extends GetxController {
           .toList();
     }
     update();
+  }
+
+  void _startLocationListener() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      Get.snackbar("Location Error", "Enable GPS to use this feature");
+      return;
+    }
+
+    // Check for location permissions
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Get.snackbar("Permission Denied", "Location permission is required");
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      Get.snackbar(
+          "Permission Denied", "Location services are permanently denied.");
+      return;
+    }
+
+    // Start listening to location updates
+    Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 0, // Update every 5 meters
+      ),
+    ).listen((Position position) {
+      lat.value = '${position.latitude}';
+      lng.value = '${position.longitude}';
+      update(); // Notify UI
+    });
   }
 
   Future<void> fetchPlaces() async {

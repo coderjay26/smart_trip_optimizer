@@ -169,30 +169,50 @@ class _ConfirmPrioritizeScreenState extends State<ConfirmPrioritizeScreen> {
     double inertiaWeight = 0.9, inertiaDecay = 0.99;
     double cognitiveFactor = 2.0, socialFactor = 2.5;
 
+    // 🛰️ Get current location (ensure these are properly initialized)
+    final currentLat = homeController.lat.value;
+    final currentLng = homeController.lng.value;
+
+    // 🌀 Initialize particles with shuffled copies of places (excluding current location)
     List<List<Map<String, String>>> particles =
         List.generate(numParticles, (i) => [...places]..shuffle());
 
     List<List<Map<String, String>>> pBest = List.from(particles);
     List<Map<String, String>> gBest = particles.first;
 
-    List<List<int>> velocities =
-        List.generate(numParticles, (i) => List<int>.filled(places.length, 0));
+    List<List<int>> velocities = List.generate(
+      numParticles,
+      (i) => List<int>.filled(places.length, 0),
+    );
 
+    // 🧠 Fitness now starts from current location → first place → next...
     double fitness(List<Map<String, String>> order) {
       double totalTime = 0;
+
+      // 🚗 From current location to first destination
+      double startDistance = homeController.haversine(
+        double.parse(currentLat.toString()),
+        double.parse(currentLng.toString()),
+        double.parse(order[0]['lat']!),
+        double.parse(order[0]['lng']!),
+      );
+      totalTime += homeController.getEstimatedTravelTime(startDistance);
+
+      // 🛣️ Then from one place to the next
       for (int i = 0; i < order.length - 1; i++) {
-        double distance = homeController.haversine(
+        double segmentDistance = homeController.haversine(
           double.parse(order[i]['lat']!),
           double.parse(order[i]['lng']!),
           double.parse(order[i + 1]['lat']!),
           double.parse(order[i + 1]['lng']!),
         );
-        totalTime += homeController.getEstimatedTravelTime(distance);
+        totalTime += homeController.getEstimatedTravelTime(segmentDistance);
       }
+
       return totalTime;
     }
 
-    // Find initial bests
+    // 🔍 Initial global best
     for (var particle in particles) {
       if (fitness(particle) < fitness(gBest)) {
         gBest = List.from(particle);
@@ -209,20 +229,27 @@ class _ConfirmPrioritizeScreenState extends State<ConfirmPrioritizeScreen> {
         }
       }
 
-      // Update velocity and position
       for (int i = 0; i < numParticles; i++) {
-        velocities[i] = updateVelocity(velocities[i], particles[i], pBest[i],
-            gBest, inertiaWeight, cognitiveFactor, socialFactor);
+        velocities[i] = updateVelocity(
+          velocities[i],
+          particles[i],
+          pBest[i],
+          gBest,
+          inertiaWeight,
+          cognitiveFactor,
+          socialFactor,
+        );
         particles[i] = applyVelocity(particles[i], velocities[i]);
       }
 
-      // Decay inertia over time
       inertiaWeight *= inertiaDecay;
     }
 
+    // ✅ Only update places with the optimized route (not including current location)
     setState(() {
       places = gBest;
-      totalTravelTime = fitness(gBest);
+      totalTravelTime =
+          fitness(gBest); // includes current location to first place
     });
   }
 
@@ -253,13 +280,14 @@ class _ConfirmPrioritizeScreenState extends State<ConfirmPrioritizeScreen> {
     return newVelocity;
   }
 
-// Apply velocity to update particle order
   List<Map<String, String>> applyVelocity(
       List<Map<String, String>> route, List<int> velocity) {
     List<Map<String, String>> newRoute = List.from(route);
-    for (int i = 0; i < velocity.length; i++) {
+
+    for (int i = 1; i < velocity.length; i++) {
+      // 👈 start from index 1 to skip current location
       int swapIdx = i + velocity[i];
-      if (swapIdx >= 0 && swapIdx < newRoute.length) {
+      if (swapIdx >= 1 && swapIdx < newRoute.length) {
         var temp = newRoute[i];
         newRoute[i] = newRoute[swapIdx];
         newRoute[swapIdx] = temp;

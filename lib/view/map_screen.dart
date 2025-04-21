@@ -3,17 +3,20 @@ import 'dart:ui' as ui;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:smart_trip_optimizer/controller/home_controller.dart';
 import 'package:smart_trip_optimizer/controller/map_controller.dart';
 
 class MapScreen extends StatelessWidget {
   final List<Map<String, String>> places;
   final MapXController routeController = Get.put(MapXController());
+  HomeController homeController = Get.find();
   MapController mapController = MapController();
   MapScreen({required this.places});
 
   @override
   Widget build(BuildContext context) {
-    routeController.fetchRoute(places);
+    routeController.fetchRoute(
+        places, '${homeController.lat}', '${homeController.lng}');
     ever<LatLng?>(routeController.userLocation, (LatLng? newLoc) {
       if (newLoc != null) {
         double adjustedHeading = routeController.heading.value;

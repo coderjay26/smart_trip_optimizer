@@ -63,13 +63,18 @@ class MapXController extends GetxController {
       ),
     ).listen((Position position) {
       currentLocation.value = LatLng(position.latitude, position.longitude);
+
       update(); // Notify UI
     });
   }
 
   static const String apiKey = "-sg6CTyTAGS_EIj9w95ZRJmqlKjUtCpa6JEWG8CG8_c";
 
-  Future<void> fetchRoute(List<Map<String, String>> places) async {
+  Future<void> fetchRoute(
+    List<Map<String, String>> places,
+    String lat,
+    String lng,
+  ) async {
     isLoading.value = true;
 
     if (places.length < 2) {
@@ -82,15 +87,34 @@ class MapXController extends GetxController {
     String transportMode = "car"; // Default to driving
 
     // Start and End points
-    String origin = "${places.first['lat']},${places.first['lng']}";
-    String destination = "${places.last['lat']},${places.last['lng']}";
+    // String origin = "${places.first['lat']},${places.first['lng']}";
+    final updatedPlaces = [
+      {
+        'lat': lat,
+        'lng': lng,
+      },
+      ...places,
+    ];
+    print("Current Location: $lat, $lng");
+    print("Places: $updatedPlaces");
+    // String origin = myLoc.value;
+    // String destination = "${places.last['lat']},${places.last['lng']}";
+    String origin =
+        "${updatedPlaces.first['lat']},${updatedPlaces.first['lng']}";
+    String destination =
+        "${updatedPlaces.last['lat']},${updatedPlaces.last['lng']}";
 
-    // Waypoints (HERE API uses `via=`)
-    String viaPoints = places.length > 2
-        ? places.sublist(1, places.length - 1).map((place) {
+    String viaPoints = updatedPlaces.length > 2
+        ? updatedPlaces.sublist(1, updatedPlaces.length - 1).map((place) {
             return "&via=${place['lat']},${place['lng']}";
           }).join("")
         : "";
+    // Waypoints (HERE API uses `via=`)
+    // String viaPoints = places.length > 2
+    //     ? places.sublist(1, places.length - 1).map((place) {
+    //         return "&via=${place['lat']},${place['lng']}";
+    //       }).join("")
+    //     : "";
 
     // 📌 Allow walking in mixed routes
     String url = "https://router.hereapi.com/v8/routes?"
